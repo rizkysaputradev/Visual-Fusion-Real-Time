@@ -1,0 +1,85 @@
+# Vision-Fusion-RT — Default config (FAISS + CLIP text priors disabled by default)
+# ------------------------------------------------------------------------------
+# This file is a sane starting point for local CPU/GPU runs. It uses FAISS
+# with an IVF+PQ index, CLIP-ViT-B/32 image encoder, and open-set decisioning.
+
+run:
+  seed: 42
+  device: auto          # auto|cuda|mps|cpu
+  fp16: true            # enable autocast on CUDA/MPS where supported
+  workdir: experiments/results/default
+  save_every_ops: true  # persist registry/index after registration ops
+
+paths:
+  persist_dir: data/registries
+  samples_dir: data/samples
+  logs_dir: experiments/results
+
+logging:
+  level: INFO           # DEBUG|INFO|WARNING|ERROR
+  jsonl: true           # write structured logs
+  file: experiments/results/default/run.log
+
+app:
+  source: webcam://0          # or a video path
+  capture_size: [640, 480]
+  show_overlay: true
+  overlay_threshold: 0.28     # draws tau_open as reference
+  ui: wide                    # used by streamlit/gradio wrapper
+  hotkeys:
+    register: r
+    undo: u
+    quit: q
+
+backbone:
+  name: clip_vit_b32          # registry key from models/backbones/registry.py
+  model_name: openai/clip-vit-base-patch32
+  image_size: 224
+  normalize: clip             # ignored by CLIP (uses its own processor)
+
+text_encoder:
+  enabled: true               # set false to disable text fusion entirely
+  name: clip_text             # clip_text | hf_text | hf_minilm | hf_e5_small
+  model_name: openai/clip-vit-base-patch32
+  aligned: true               # true only when using CLIP text ↔ CLIP vision
+  prompt_template: "a photo of a {label}"
+
+preproc:
+  augment:
+    strength: mid             # low|mid|high (used only during registration)
+
+memory:
+  backend: faiss              # faiss|milvus
+  metric: ip                  # ip (cosine) | l2
+  index_spec: "IVF4096,PQ64"  # "Flat" | "IVF<n>,Flat" | "IVF<n>,PQ<m>"
+  nprobe: 16
+  enforce_normalize: true     # normalize on add/search when metric=ip
+  train_threshold: 200
+  persist:
+    index_file: mem_index.bin
+    labels_file: mem_labels.json.gz
+
+retrieval:
+  k: 8
+  neighbor_agg: max           # max|mean|sum
+  alpha_fusion: 0.7           # image/text blend; 1.0=image-only
+  temporal_ema: 0.15          # 0 disables EMA smoothing
+
+decision:
+  temperature: 0.9            # softmax temperature
+  tau_open: 0.28              # open-set threshold on top-1 prob
+  use_margin: true
+  margin_delta: 0.05
+
+calibration:
+  enable_on_start: false      # set true to run quick dev calibration at boot
+  dev_known_dir: null         # e.g., data/samples/dev_known
+  dev_unknown_dir: null       # e.g., data/samples/dev_unknown
+  k_for_fit: 5
+  target_fpr: 0.05
+
+benchmark:
+  enable: false
+  seconds: 20
+  warmup_s: 2.0
+  display: false

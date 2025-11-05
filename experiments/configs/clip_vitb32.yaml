@@ -1,0 +1,75 @@
+# Vision-Fusion-RT — CLIP ViT-B/32 focused config
+# ------------------------------------------------
+# This variant emphasizes CLIP alignment (image + text). Useful for zero/few-shot
+# with label prompts. Uses FAISS Flat for exact search (nice for small memories).
+
+run:
+  seed: 123
+  device: auto
+  fp16: true
+  workdir: experiments/results/clip_b32
+
+paths:
+  persist_dir: data/registries
+  logs_dir: experiments/results
+
+logging:
+  level: INFO
+  jsonl: true
+  file: experiments/results/clip_b32/run.log
+
+app:
+  source: webcam://0
+  capture_size: [960, 540]
+  show_overlay: true
+  overlay_threshold: 0.30
+  ui: wide
+
+backbone:
+  name: clip_vit_b32
+  model_name: openai/clip-vit-base-patch32
+  image_size: 224
+
+text_encoder:
+  enabled: true
+  name: clip_text
+  model_name: openai/clip-vit-base-patch32
+  aligned: true
+  prompt_template: |
+    a high-quality studio photograph of a {label}, product-only, neutral background
+
+preproc:
+  augment:
+    strength: low   # CLIP is robust; keep aug light for few-shot stability
+
+memory:
+  backend: faiss
+  metric: ip
+  index_spec: "Flat"          # exact search is fine for <= ~200k vectors on CPU/GPU
+  nprobe: 1                   # N/A for Flat but harmless
+  enforce_normalize: true
+  train_threshold: 0
+
+retrieval:
+  k: 5
+  alpha_fusion: 0.6     # ← keep this
+  fuse: late            # or 'fusion: late' also works
+  neighbor_agg: softmax
+  neighbor_temp: 0.5
+  score_norm: none
+
+decision:
+  temperature: 0.85
+  tau_open: 0.30
+  use_margin: true
+  margin_delta: 0.06
+
+calibration:
+  enable_on_start: false
+  k_for_fit: 8
+  target_fpr: 0.05
+
+benchmark:
+  enable: false
+  seconds: 30
+  display: false

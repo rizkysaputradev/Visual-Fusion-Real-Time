@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual Env
+.venv/
+.vfenv/
+venv/
+env/
+ENV/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.vscode/*
+!.vscode/settings.json
+
+# Experiments / Runs / Outputs
+experiments/results/
+experiments/checkpoints/
+experiments/snapshots/
+experiments/saved_models/
+experiments/cache/
+experiments/.cache/
+logs/
+outputs/
+runs/
+checkpoints/
+snapshots/
+
+# Model weights / HF large files
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.tflite
+
+# FAISS / Memory Store
+*.index
+*.faiss
+*.idx
+
+# Streamlit local states
+.streamlit/
+
+# Data
+data/
+datasets/
+dataset/
+samples/
+
+# Images captured during run
+*.png
+*.jpg
+*.jpeg
+
+# Temporary config overrides
+*.local.yaml
+*.secret.yaml
+*.private.yaml
+
+# Cache dirs
+.cache/
+__cache__/
+.cache_hf/
+huggingface/
+hf_cache/
+hf_cache*/
+
+# PyTorch compile cache
+_torch_cache/
+torch_cache/

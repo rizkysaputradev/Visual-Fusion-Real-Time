@@ -1,0 +1,83 @@
+# Vision-Fusion-RT — Milvus backend config
+# ----------------------------------------
+# Use this when you have a running Milvus (standalone/cluster) and plan
+# to scale memory to millions of vectors. Defaults target a common IVF index.
+
+run:
+  seed: 7
+  device: auto
+  fp16: true
+  workdir: experiments/results/milvus
+
+paths:
+  persist_dir: data/registries
+  logs_dir: experiments/results
+
+logging:
+  level: INFO
+  jsonl: true
+  file: experiments/results/milvus/run.log
+
+app:
+  source: webcam://0
+  capture_size: [1280, 720]
+  show_overlay: true
+  overlay_threshold: 0.32
+  ui: wide
+
+backbone:
+  name: clip_vit_b32
+  model_name: openai/clip-vit-base-patch32
+  image_size: 224
+
+text_encoder:
+  enabled: true
+  name: clip_text
+  model_name: openai/clip-vit-base-patch32
+  aligned: true
+  prompt_template: "a photo of a {label}"
+
+preproc:
+  augment:
+    strength: mid
+
+memory:
+  backend: milvus            # <<< switch backend
+  metric: ip                 # ip|l2 (if l2, retrieval layer negates distances to sim)
+  # Milvus connection/index settings mirror MilvusConfig in memory/milvus_store.py
+  milvus:
+    host: 127.0.0.1
+    port: "19530"
+    collection_name: vision_fusion_rt
+    index_type: IVF_FLAT      # IVF_FLAT|IVF_SQ8|HNSW
+    index_param:              # tuned for 512D, adjust as needed
+      nlist: 8192
+    search_param:
+      metric_type: IP         # IP|L2
+      params:
+        nprobe: 32
+  persist:
+    # Milvus is server-side; we still save the registry locally for labels.
+    labels_file: mem_labels.json.gz
+
+retrieval:
+  k: 20
+  neighbor_agg: sum          # sum can help when labels have many samples
+  alpha_fusion: 0.7
+  temporal_ema: 0.12
+
+decision:
+  temperature: 0.95
+  tau_open: 0.32
+  use_margin: true
+  margin_delta: 0.05
+
+calibration:
+  enable_on_start: false
+  k_for_fit: 10
+  target_fpr: 0.03
+
+benchmark:
+  enable: false
+  seconds: 40
+  display: false

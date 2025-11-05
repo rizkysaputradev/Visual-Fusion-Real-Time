@@ -1,0 +1,131 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vision-fusion-rt"
+version = "0.1.0"
+description = "Real-time multimodal few-shot object recognition with online memory (FAISS/Milvus) and CLIP/Vision Transformer backbones."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Rizky Johan Saputra", email = "contact@example.com" }
+]
+keywords = [
+  "computer-vision", "multimodal", "few-shot", "real-time",
+  "CLIP", "transformers", "faiss", "milvus", "retrieval"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Multimedia :: Graphics"
+]
+
+# Runtime dependencies kept conservative and cross-platform.
+# GPU/OS-specific torch wheels are intentionally not pinned here —
+# install the right torch wheel separately if needed.
+# (requirements.txt mirrors these with comments.)
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.11",
+  "pillow>=10.0",
+  "pandas>=2.0",
+  "opencv-python>=4.9",
+  "pyyaml>=6.0",
+  "tqdm>=4.66",
+  "rich>=13.7",
+
+  # Models / encoders
+  "transformers>=4.41",
+  "sentence-transformers>=2.7",
+  "timm>=0.9.5",
+
+  # Vector DBs
+  "faiss-cpu>=1.7.4",       # use faiss-gpu if you manage CUDA wheels yourself
+  "pymilvus>=2.4",
+
+  # UIs
+  "streamlit>=1.35",
+  "gradio>=4.0",
+]
+
+[project.optional-dependencies]
+# Install with: pip install -e .[dev]
+dev = [
+  "pytest>=7.4",
+  "pytest-cov>=4.1",
+  "black>=24.0",
+  "isort>=5.13",
+  "mypy>=1.8",
+  "ruff>=0.5.0",
+  "types-PyYAML>=6.0.12.20240808",
+  "types-requests>=2.31.0.20240218",
+]
+# GPU build of FAISS (you must have a matching CUDA env)
+# pip install -e .[faiss-gpu]
+faiss-gpu = ["faiss-gpu>=1.7.4"]
+# Docs (if you later add sphinx/mkdocs)
+docs = ["mkdocs>=1.5", "mkdocs-material>=9.5"]
+
+[project.urls]
+Homepage = "https://github.com/your-user/vision-fusion-rt"
+Repository = "https://github.com/your-user/vision-fusion-rt"
+Issues = "https://github.com/your-user/vision-fusion-rt/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["src*"]
+
+# Include non-Python assets (configs, docs, etc.) in source dists
+[tool.setuptools.exclude-package-data]
+"*" = ["*.psd", "*.ai"]
+
+[tool.setuptools.package-data]
+"src" = ["**/*.yaml", "**/*.yml", "**/*.svg", "**/*.md"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+src_paths = ["src", "tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+fix = true
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]  # handled by black
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+no_implicit_optional = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-q -ra --disable-warnings"
+testpaths = ["tests"]
+filterwarnings = [
+  "ignore::DeprecationWarning:tensorflow.*",
+  "ignore::DeprecationWarning:torchvision.*",
+]

@@ -1,0 +1,48 @@
+# Vision-Fusion-RT — Runtime dependencies
+# ---------------------------------------
+# Tip:
+#   * If you need GPU PyTorch: install torch/torchvision/torchaudio first using
+#     the official command for your CUDA/MPS setup, THEN `pip install -r requirements.txt`.
+#   * On CPU-only: you may install `torch` CPU wheels from PyPI directly.
+
+# Core scientific stack
+numpy>=1.24
+scipy>=1.11
+pandas>=2.0
+pillow>=10.0
+
+# CV & IO
+opencv-python>=4.9
+pyyaml>=6.0
+tqdm>=4.66
+rich>=13.7
+
+# Modeling / encoders
+transformers>=4.41
+sentence-transformers>=2.7
+timm>=0.9.5
+
+# Vector databases (local + remote)
+faiss-cpu>=1.7.4         # use 'faiss-gpu' instead if you have CUDA and prefer GPU FAISS
+pymilvus>=2.4
+
+# UI front-ends
+streamlit>=1.35
+gradio>=4.0
+
+# --- Optional: PyTorch (choose the right one for your system) ---
+# CPU-only (comment/uncomment as you need):
+# torch>=2.2
+# torchvision>=0.17
+# torchaudio>=2.2
+#
+# CUDA builds: follow https://pytorch.org/ to get the correct index URL, e.g.:
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# --- Dev / Test (install separately or via extras in pyproject) ---
+# pytest>=7.4
+# pytest-cov>=4.1
+# black>=24.0
+# isort>=5.13
+# mypy>=1.8
+# ruff>=0.5.0
