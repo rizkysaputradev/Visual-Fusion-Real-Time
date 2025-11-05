@@ -58,10 +58,25 @@ datasets/
 dataset/
 samples/
 
-# Images captured during run
+# Images captured during run (keep)
 *.png
 *.jpg
 *.jpeg
+
+# --- allow README/docs images (lower + UPPER) ---
+!docs/**
+!docs/**/*.png
+!docs/**/*.jpg
+!docs/**/*.jpeg
+!docs/**/*.PNG
+!docs/**/*.JPG
+!docs/**/*.JPEG
+!docs/assets/*.png
+!docs/assets/*.jpg
+!docs/assets/*.jpeg
+!docs/assets/*.PNG
+!docs/assets/*.JPG
+!docs/assets/*.JPEG
 
 # Temporary config overrides
 *.local.yaml

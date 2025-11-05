@@ -74,16 +74,16 @@ The system uses **CLIP image/text alignment** and **not a classifier**. Rather, 
 This system does not rely on a traditional machine learning (ML) pipeline like sklearn classification. Rather, it relies on a **Retrieval-Augmented (RAG) Vision Model architecture**. The model is structured under these primary architectures:
 
 * **RAG for Vision**:
-![RAG Diagram](examples/RAG_Vision.png)
+![RAG Diagram](docs/assets/RAG_Vision.png)
 
 * **Open Vocabulary Object Recognition**:
-![Open Vocab Diagram](examples/Open_Vocab.png)
+![Open Vocab Diagram](docs/assets/Open_Vocab.png)
 
 * **CLIP Few-Shot Incremental Learning**:
-![CLIP Diagram](examples/CLIP.png)
+![CLIP Diagram](docs/assets/CLIP.png)
 
 * **Vector Store Based Online Recognition**:
-![Vector Store Diagram](examples/Vector_Store.png)
+![Vector Store Diagram](docs/assets/Vector_Store.png)
 
 ## ⚒️ Architecture Overview
 **Vision Fusion RT** is implemented with a strict yet adjustable modularity architecture as shown below:
@@ -153,13 +153,13 @@ streamlit run src/app/ui_streamlit.py -- \
 After running the Streamlit UI, the following Vision Fusion RT system will be redirected to a **localhost** (*adjustable host*) and display the UI page with its keys, sliders and camera display after clicking the start button as shown below.
 
 ### 🛜 Streamlit Localhost UI
-![Streamlit UI](examples/Streamlit_UI.png)
+![Streamlit UI](docs/assets/Streamlit_UI.png)
 
 ### 🛜 Streamlit Camera Display
-![Streamlit Camera](examples/Streamlit_Camera.png)
+![Streamlit Camera](docs/assets/Streamlit_Camera.png)
 
 ### 📶 Terminal Sample
-![Streamlit Terminal](examples/Streamlit_Terminal.png)
+![Streamlit Terminal](docs/assets/Streamlit_Terminal.png)
 
 ### 🔑 UI hotkeys (OpenCV window)
 There are several keys that is crucial when running or simulating the real-time system. Here are the implemented ones:
